@@ -3,3 +3,5 @@ target/
 .bsp
 .metals
 .bloop
+
+*.~undo-tree~
