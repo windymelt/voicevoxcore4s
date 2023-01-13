@@ -2,7 +2,7 @@ package com.github.windymelt.voicevoxcore4s
 
 import com.sun.jna.Library
 import com.sun.jna.Native
-import com.sun.jna.ptr.IntByReference
+import com.sun.jna.ptr.PointerByReference
 import com.sun.jna.Pointer
 
 // cf. https://github.com/java-native-access/jna/blob/master/www/Mappings.md
@@ -20,9 +20,9 @@ trait Core extends Library {
   // TODO: decode_forward
   def last_error_message(): String
   def voicevox_load_openjtalk_dict(dict_path: String): Int // => VoicevoxResultCode
-  def voicevox_tts(text: String, speaker_id: Long, output_binary_size: Array[Int]/* == IntByReference */ /* int* */, output_wav: Pointer)
+  def voicevox_tts(text: String, speaker_id: Long, output_binary_size: Array[Int]/* == IntByReference */ /* int* */, output_wav: PointerByReference)
   // TODO: voicevox_tts_from_kana
-  def voicevox_wav_free(wav: Array[Byte]): Unit // should wrap this array
+  def voicevox_wav_free(wav: Pointer): Unit // should wrap this array
   def voicevox_error_result_to_message(result_code: Int): String
 }
 
