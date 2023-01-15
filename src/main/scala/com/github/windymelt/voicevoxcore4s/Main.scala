@@ -1,9 +1,6 @@
 package com.github.windymelt.voicevoxcore4s
 
-import com.sun.jna.Pointer
-import com.sun.jna.Memory
-import com.sun.jna.Native
-import com.sun.jna.ptr.{PointerByReference, IntByReference, LongByReference}
+import com.sun.jna.ptr.{PointerByReference, IntByReference}
 import java.io.FileOutputStream
 
 object Hello extends App {
