@@ -5,7 +5,7 @@ import org.scalatest.matchers.should.Matchers
 
 import com.sun.jna.ptr.{PointerByReference, IntByReference}
 
-class HelloSpec extends AnyFlatSpec with Matchers {
+class CoreSpec extends AnyFlatSpec with Matchers {
   "Core" should "work at voicevox_tts" in {
     val core = Core()
     val initialized = core.initialize(use_gpu = false)
