@@ -20,18 +20,25 @@ trait Core extends Library {
       cpu_num_threads: Int = 0,
       load_all_models: Boolean = true
   ): Boolean
+
   // int64_t -> Long
   def load_model(speaker_id: Long): Boolean
+
   def is_model_loaded(speaker_id: Long): Boolean
+
   def finalizeCore(): Unit
+
   def metas(): String // JSON
+
   def supported_devices(): String // JSON
+
   def yukarin_s_forward(
       length: Long,
       phoneme_list: Array[Long],
       speaker_id: Array[Long],
       output: Array[Float]
   ): Boolean
+
   def yukarin_sa_forward(
       length: Long,
       vowel_phoneme_list: Array[Long],
@@ -43,6 +50,7 @@ trait Core extends Library {
       speaker_id: Array[Long],
       output: Array[Float]
   ): Boolean
+
   def decode_forward(
       length: Long,
       phoneme_size: Long,
@@ -51,23 +59,29 @@ trait Core extends Library {
       speaker_id: Array[Long],
       output: Array[Float]
   ): Boolean
+
   def last_error_message(): String
+
   def voicevox_load_openjtalk_dict(
       dict_path: String
   ): VoicevoxResultCode
+
   def voicevox_tts(
       text: String,
       speaker_id: Long,
       output_binary_size: Array[Int] /* == IntByReference */ /* int* */,
       output_wav: PointerByReference
   ): VoicevoxResultCode
+
   def voicevox_tts_from_kana(
       text: String,
       speaker_id: Long,
       output_binary_size: Array[Int],
       output_wav: PointerByReference
   ): VoicevoxResultCode
-  def voicevox_wav_free(wav: Pointer): Unit // should wrap this array
+
+  def voicevox_wav_free(wav: Pointer): Unit
+
   def voicevox_error_result_to_message(result_code: VoicevoxResultCode): String
 }
 
