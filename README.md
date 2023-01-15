@@ -18,6 +18,9 @@ Currently this binding supports [VOICEVOX Core v0.13.0](https://github.com/VOICE
 ## Minimal example
 
 ```scala
+import com.sun.jna.ptr.{PointerByReference, IntByReference}
+import java.io.FileOutputStream
+
 val core = Core()
 val initialized = core.initialize(use_gpu = false)
 if (initialized) {
