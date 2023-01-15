@@ -30,8 +30,25 @@ trait Core extends Library {
       speaker_id: Array[Long],
       output: Array[Float]
   ): Boolean
-  // TODO: yukarin_sa_forward
-  // TODO: decode_forward
+  def yukarin_sa_forward(
+      length: Long,
+      vowel_phoneme_list: Array[Long],
+      consonant_phoneme_list: Array[Long],
+      start_accent_list: Array[Long],
+      end_accent_list: Array[Long],
+      start_accent_phrase_list: Array[Long],
+      end_accent_phrase_list: Array[Long],
+      speaker_id: Array[Long],
+      output: Array[Float]
+  ): Boolean
+  def decode_forward(
+      length: Long,
+      phoneme_size: Long,
+      f0: Array[Float],
+      phoneme: Array[Float],
+      speaker_id: Array[Long],
+      output: Array[Float]
+  ): Boolean
   def last_error_message(): String
   def voicevox_load_openjtalk_dict(
       dict_path: String
@@ -41,8 +58,13 @@ trait Core extends Library {
       speaker_id: Long,
       output_binary_size: Array[Int] /* == IntByReference */ /* int* */,
       output_wav: PointerByReference
-  )
-  // TODO: voicevox_tts_from_kana
+  ): Int // => VoicevoxResultCode
+  def voicevox_tts_from_kana(
+      text: String,
+      speaker_id: Long,
+      output_binary_size: Array[Int],
+      output_wav: PointerByReference
+  ): Int // => VoicevoxResultCode
   def voicevox_wav_free(wav: Pointer): Unit // should wrap this array
   def voicevox_error_result_to_message(result_code: Int): String
 }
