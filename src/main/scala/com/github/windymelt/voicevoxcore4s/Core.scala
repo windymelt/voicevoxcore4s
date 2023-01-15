@@ -5,6 +5,7 @@ import com.sun.jna.Library.OPTION_FUNCTION_MAPPER
 import com.sun.jna.Native
 import com.sun.jna.NativeLibrary
 import com.sun.jna.Pointer
+import com.sun.jna.ptr.IntByReference
 import com.sun.jna.ptr.PointerByReference
 
 import java.lang.reflect.Method
@@ -69,14 +70,14 @@ trait Core extends Library {
   def voicevox_tts(
       text: String,
       speaker_id: Long,
-      output_binary_size: Array[Int] /* == IntByReference */ /* int* */,
+      output_binary_size: IntByReference,
       output_wav: PointerByReference
   ): VoicevoxResultCode
 
   def voicevox_tts_from_kana(
       text: String,
       speaker_id: Long,
-      output_binary_size: Array[Int],
+      output_binary_size: IntByReference,
       output_wav: PointerByReference
   ): VoicevoxResultCode
 
