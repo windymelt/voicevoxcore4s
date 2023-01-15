@@ -28,5 +28,6 @@ object Hello extends App {
     fs.write(resultArray)
     fs.close()
     core.voicevox_wav_free(resultPtr)
+    core.finalizeCore()
   }
 }
