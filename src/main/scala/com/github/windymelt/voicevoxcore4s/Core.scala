@@ -102,4 +102,9 @@ object Core {
     Map(OPTION_FUNCTION_MAPPER -> functionMap).asJava
   )
   def apply(): Core = INSTANCE
+
+  object VoiceVoxResultCode extends Enumeration {
+    val VOICEVOX_RESULT_SUCCEED = 0
+    val VOICEVOX_RESULT_NOT_LOADED_OPENJTALK_DICT = 1
+  }
 }
