@@ -13,6 +13,8 @@ import scala.collection.JavaConverters._
 // cf. https://github.com/java-native-access/jna/blob/master/www/Mappings.md
 // cf. https://github.com/VOICEVOX/voicevox_core/blob/0.13.0/core/src/core.h
 trait Core extends Library {
+  type VoicevoxResultCode = Int
+
   def initialize(
       use_gpu: Boolean,
       cpu_num_threads: Int = 0,
@@ -52,21 +54,21 @@ trait Core extends Library {
   def last_error_message(): String
   def voicevox_load_openjtalk_dict(
       dict_path: String
-  ): Int // => VoicevoxResultCode
+  ): VoicevoxResultCode
   def voicevox_tts(
       text: String,
       speaker_id: Long,
       output_binary_size: Array[Int] /* == IntByReference */ /* int* */,
       output_wav: PointerByReference
-  ): Int // => VoicevoxResultCode
+  ): VoicevoxResultCode
   def voicevox_tts_from_kana(
       text: String,
       speaker_id: Long,
       output_binary_size: Array[Int],
       output_wav: PointerByReference
-  ): Int // => VoicevoxResultCode
+  ): VoicevoxResultCode
   def voicevox_wav_free(wav: Pointer): Unit // should wrap this array
-  def voicevox_error_result_to_message(result_code: Int): String
+  def voicevox_error_result_to_message(result_code: VoicevoxResultCode): String
 }
 
 object Core {
