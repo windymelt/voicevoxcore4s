@@ -16,15 +16,17 @@ permissions:
 
 jobs:
   build:
-
+    strategy:
+      matrix:
+        version: [11, 17]
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up JDK 11
+    - name: Set up JDK
       uses: actions/setup-java@v3
       with:
-        java-version: '11'
+        java-version: ${{ matrix.version }}
         distribution: 'temurin'
         cache: 'sbt'
     - name: Install libcore.so
