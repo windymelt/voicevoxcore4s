@@ -22,8 +22,6 @@ lazy val common = project
     ),
   )
 
-//compile in Compile <<= (compile in Compile).dependsOn(downloadCore)
-
 lazy val x8664linuxcpu = (project in file(".")).settings(
   name := "voicevoxcore4s-linux-x64-cpu",
   buildInfoKeys := Seq[BuildInfoKey]("libcoreFile" -> "libcore.so", "libonnxFile" -> "libonnxruntime.so.1.10.0"),
