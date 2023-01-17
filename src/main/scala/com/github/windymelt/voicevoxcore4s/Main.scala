@@ -6,13 +6,17 @@ import java.io.FileOutputStream
 object Hello extends App {
   println("initializing")
   println(System.getProperty("java.library.path"))
+  /* Extract dictionary files from JAR into real file system */
+  val dictionaryDirectory = Util.extractDictFiles()
+
   val core = Core()
   val initialized = core.initialize(use_gpu = false)
   println(s"Hello, voicevoxcore4s! initialized? -> ($initialized)")
   if (initialized) {
     println("reading meta info...")
     println(core.metas())
-    val loadDictResult = core.voicevox_load_openjtalk_dict("open_jtalk_dic_utf_8-1.11")
+    val loadDictResult =
+      core.voicevox_load_openjtalk_dict(dictionaryDirectory)
     println(s"loadResult: ${loadDictResult}")
     val length = new IntByReference()
     val pbr = new PointerByReference()
