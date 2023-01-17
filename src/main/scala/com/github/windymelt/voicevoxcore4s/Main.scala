@@ -8,6 +8,7 @@ object Hello extends App {
   println(System.getProperty("java.library.path"))
   /* Extract dictionary files from JAR into real file system */
   val dictionaryDirectory = Util.extractDictFiles()
+  val libs = Util.extractLibraries()
 
   val core = Core()
   val initialized = core.initialize(use_gpu = false)
