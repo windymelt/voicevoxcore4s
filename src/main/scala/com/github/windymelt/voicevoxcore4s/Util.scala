@@ -1,6 +1,13 @@
 package com.github.windymelt.voicevoxcore4s
 
 object Util {
+    /**
+      * Extract dictionary files for VOICEVOX into temporary directory.
+      * 
+      * As usual, under /tmp is used for temporary directory.
+      *
+      * @return Extracted dictionary directory
+      */
   def extractDictFiles(): String = {
     val tmpdir = os.temp.dir(prefix = "voicevoxcore4s", deleteOnExit = true)
     println(s"extracting dictionary files itnto $tmpdir...")
