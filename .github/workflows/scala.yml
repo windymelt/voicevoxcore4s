@@ -30,6 +30,8 @@ jobs:
         distribution: 'temurin'
         cache: 'sbt'
     - name: synthesize from cli
-      run: sbt run
+      run: |
+        sbt compile
+        sbt run
     - name: Run tests
       run: sbt test
