@@ -29,15 +29,9 @@ jobs:
         java-version: ${{ matrix.version }}
         distribution: 'temurin'
         cache: 'sbt'
-    - name: Install libcore.so
+    - name: synthesize from cli
       run: |
-        wget https://github.com/VOICEVOX/voicevox_core/releases/download/0.13.0/voicevox_core-linux-x64-cpu-0.13.0.zip
-        unzip voicevox_core-linux-x64-cpu-0.13.0.zip
-        sudo install voicevox_core-linux-x64-cpu-0.13.0/libcore.so /usr/lib/libcore.so
-    - name: Install ONNX runtime
-      run: |
-        wget https://github.com/microsoft/onnxruntime/releases/download/v1.10.0/onnxruntime-linux-x64-1.10.0.tgz
-        tar zxf onnxruntime-linux-x64-1.10.0.tgz
-        sudo install onnxruntime-linux-x64-1.10.0/lib/* /usr/lib/
+        sbt compile
+        sbt run
     - name: Run tests
       run: sbt test
