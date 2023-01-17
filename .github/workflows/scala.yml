@@ -39,9 +39,5 @@ jobs:
         wget https://github.com/microsoft/onnxruntime/releases/download/v1.10.0/onnxruntime-linux-x64-1.10.0.tgz
         tar zxf onnxruntime-linux-x64-1.10.0.tgz
         sudo install onnxruntime-linux-x64-1.10.0/lib/* /usr/lib/
-    - name: Install OpenJTalk dictionary
-      run: |
-        wget --content-disposition https://sourceforge.net/projects/open-jtalk/files/Dictionary/open_jtalk_dic-1.11/open_jtalk_dic_utf_8-1.11.tar.gz/download
-        tar zxf open_jtalk_dic_utf_8-1.11.tar.gz
     - name: Run tests
       run: sbt test
