@@ -15,7 +15,6 @@ buildInfoPackage := "com.github.windymelt.voicevoxcore4s"
 lazy val common = project
   .settings(
     name := "voicevoxcore4s",
-    libraryDependencies += scalaTest % Test,
     libraryDependencies ++= Seq(
       "net.java.dev.jna" % "jna" % "5.12.1",
       "net.java.dev.jna" % "jna-platform" % "5.12.1",
@@ -28,6 +27,9 @@ lazy val common = project
 lazy val x8664linuxcpu = (project in file(".")).settings(
   name := "voicevoxcore4s-linux-x64-cpu",
   buildInfoKeys := Seq[BuildInfoKey]("libcoreFile" -> "libcore.so", "libonnxFile" -> "libonnxruntime.so.1.10.0"),
+  libraryDependencies ++= Seq(
+    scalaTest % Test,
+  ),
   downloadCore := {
     if(java.nio.file.Files.notExists(new File("voicevox_core-linux-x64-cpu-0.13.0").toPath())) {
         println("[libcore] Path does not exist, downloading...")

@@ -6,11 +6,15 @@ import org.scalatest.matchers.should.Matchers
 import com.sun.jna.ptr.{PointerByReference, IntByReference}
 
 class CoreSpec extends AnyFlatSpec with Matchers {
+  val dictionaryDirectory = Util.extractDictFiles()
+  val libs = Util.extractLibraries()
+  Util.unsafeLoadLibraries()
+
   "Core" should "work at voicevox_tts" in {
     val core = Core()
     val initialized = core.initialize(use_gpu = false)
     initialized shouldBe true
-    val loadDictResult = core.voicevox_load_openjtalk_dict("open_jtalk_dic_utf_8-1.11")
+    val loadDictResult = core.voicevox_load_openjtalk_dict(dictionaryDirectory)
     loadDictResult shouldBe Core.VoiceVoxResultCode.VOICEVOX_RESULT_SUCCEED
     val (length, pbr) = (new IntByReference(), new PointerByReference())
     core.voicevox_tts("こんにちは、世界", 2L /* 四国めたん */, length, pbr)
