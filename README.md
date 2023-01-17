@@ -22,10 +22,12 @@ Currently this binding supports [VOICEVOX Core v0.13.0](https://github.com/VOICE
 import com.sun.jna.ptr.{PointerByReference, IntByReference}
 import java.io.FileOutputStream
 
+val dictionaryDirectory = Util.extractDictFiles()
+
 val core = Core()
 val initialized = core.initialize(use_gpu = false)
 if (initialized) {
-  val loadDictResult = core.voicevox_load_openjtalk_dict("open_jtalk_dic_utf_8-1.11")
+  val loadDictResult = core.voicevox_load_openjtalk_dict(dictionaryDirectory)
   if (loadDictResult == 0) {
     val (length, pbr) = (new IntByReference(), new PointerByReference())
     core.voicevox_tts("こんにちは、世界", 2L /* 四国めたん */, length, pbr)

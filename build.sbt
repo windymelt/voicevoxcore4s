@@ -11,9 +11,11 @@ lazy val root = (project in file("."))
     libraryDependencies += scalaTest % Test,
     libraryDependencies ++= Seq(
       "net.java.dev.jna" % "jna" % "5.12.1",
-      "net.java.dev.jna" % "jna-platform" % "5.12.1"
+      "net.java.dev.jna" % "jna-platform" % "5.12.1",
+      "com.lihaoyi" %% "os-lib" % "0.7.2", // for extracting resources
     ),
-    Compile / unmanagedResourceDirectories += { baseDirectory.value / "open_jtalk_dic_utf_8-1.11" },
   )
+
+    Compile / unmanagedResourceDirectories += { baseDirectory.value / "open_jtalk_dic_utf_8-1.11" }
 
 // See https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html for instructions on how to publish to Sonatype.
