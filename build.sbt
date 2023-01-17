@@ -27,7 +27,7 @@ lazy val common = project
 
 lazy val x8664linuxcpu = (project in file(".")).settings(
   name := "voicevoxcore4s-linux-x64-cpu",
-  buildInfoKeys := Seq[BuildInfoKey]("libcoreFile" -> "libcore.so", "libonnxFile" -> "libonnxruntime.so"),
+  buildInfoKeys := Seq[BuildInfoKey]("libcoreFile" -> "libcore.so", "libonnxFile" -> "libonnxruntime.so.1.10.0"),
   downloadCore := {
     if(java.nio.file.Files.notExists(new File("voicevox_core-linux-x64-cpu-0.13.0").toPath())) {
         println("[libcore] Path does not exist, downloading...")
@@ -51,7 +51,7 @@ lazy val x8664linuxcpu = (project in file(".")).settings(
   Compile / unmanagedResourceDirectories += { baseDirectory.value / "open_jtalk_dic_utf_8-1.11" },
   Compile / unmanagedResources ++= { Seq(
     file("voicevox_core-linux-x64-cpu-0.13.0/voicevox_core-linux-x64-cpu-0.13.0/libcore.so"),
-    // file("onnxruntime-linux-x64-1.10.0/lib/libonnxruntime.so.1.10.0"),
+    file("onnxruntime-linux-x64-1.10.0/lib/libonnxruntime.so.1.10.0"),
     file("onnxruntime-linux-x64-1.10.0/lib/libonnxruntime.so"),
   ) },
 ).dependsOn(common).enablePlugins(BuildInfoPlugin)

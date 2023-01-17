@@ -1,8 +1,13 @@
 package com.github.windymelt.voicevoxcore4s
 
 import java.io.File
+import java.lang.invoke.MethodHandles
 
 object Util {
+  // FIXME: jarPath will diverge when using sbt...
+  // val jarPath = new java.io.File(Util.getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile()
+  val jarPath = os.pwd
+  val libDir = jarPath / "voicevoxcore4s-libs"
 
   /** Extract dictionary files for VOICEVOX into temporary directory.
     *
@@ -35,18 +40,14 @@ object Util {
     tmpdir.toString()
   }
 
-  /**
-    * Extract library files for VOICEVOX into current working directory.
+  /** Extract library files for VOICEVOX into current working directory.
     *
-    * @return Library directory path
+    * @return
+    *   Library directory path
     */
   def extractLibraries(): String = {
     import scala.sys.process._
-    // FIXME: jarPath will diverge when using sbt...
-    // val jarPath = new java.io.File(Util.getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile()
-    val jarPath = os.pwd
 
-    val libDir = jarPath / "voicevoxcore4s-libs"
     println(s"copying library files into ${libDir.toString()}")
 
     // libcore
@@ -73,6 +74,16 @@ object Util {
       os.write(libonnxFile, stream, createFolders = true)
     }
 
+    println("finished extracting")
     libDir.toString()
+  }
+
+  /** Load VOICEVOX and ONNXRuntime libraries.
+    *
+    * Because Double-loading causes runtime error, do call this method only once.
+    */
+  def unsafeLoadLibraries(): Unit = {
+    System.load((libDir / BuildInfo.libcoreFile).toString)
+    System.load((libDir / BuildInfo.libonnxFile).toString)
   }
 }

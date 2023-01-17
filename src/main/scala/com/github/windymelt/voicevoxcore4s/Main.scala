@@ -9,6 +9,9 @@ object Hello extends App {
   /* Extract dictionary files from JAR into real file system */
   val dictionaryDirectory = Util.extractDictFiles()
   val libs = Util.extractLibraries()
+  
+  // CAVEAT: Call only once
+  Util.unsafeLoadLibraries()
 
   val core = Core()
   val initialized = core.initialize(use_gpu = false)
