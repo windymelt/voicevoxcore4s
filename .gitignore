@@ -5,3 +5,10 @@ target/
 .bloop
 
 *.~undo-tree~
+
+onnxruntime-*/
+voicevox_core-*/
+voicevoxcore4s-libs
+*.tar.gz
+*.zip
+*.log
