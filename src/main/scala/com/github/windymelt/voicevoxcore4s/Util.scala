@@ -21,7 +21,7 @@ object Util {
     println(s"extracting dictionary files itnto $tmpdir...")
     val files = Seq(
       "char.bin",
-      "COPYING",
+      // "COPYING", // sbt-assemblyが自動的に名前を変更して不定になるので省略している。COPYING自体はJARに同梱される
       "left-id.def",
       "matrix.bin",
       "pos-id.def",
