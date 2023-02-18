@@ -1,6 +1,6 @@
 package com.github.windymelt.voicevoxcore4s
 
-import com.sun.jna.ptr.{PointerByReference, IntByReference}
+import com.sun.jna.ptr.{PointerByReference, IntByReference, LongByReference}
 import java.io.FileOutputStream
 
 object Hello extends App {
@@ -11,28 +11,40 @@ object Hello extends App {
   val libs = Util.extractLibraries()
   
   // CAVEAT: Call only once
-  Util.unsafeLoadLibraries()
+  //Util.unsafeLoadLibraries()
 
+  Util.loadCore()
   val core = Core()
-  val initialized = core.initialize(use_gpu = false)
-  println(s"Hello, voicevoxcore4s! initialized? -> ($initialized)")
-  if (initialized) {
+  println(core.voicevox_get_version())
+  val initializeOptions = core.voicevox_make_default_initialize_options()
+  initializeOptions.open_jtalk_dict_dir = dictionaryDirectory
+  initializeOptions.acceleration_mode = 1
+  println(initializeOptions)
+  val initialized = core.voicevox_initialize(initializeOptions)
+  println(s"Hello, voicevoxcore4s! initialized? -> (${initialized})")
+  if (initialized == Core.VoicevoxResultCode.VOICEVOX_RESULT_OK) {
     println("reading meta info...")
-    println(core.metas())
-    val loadDictResult =
-      core.voicevox_load_openjtalk_dict(dictionaryDirectory)
-    println(s"loadResult: ${loadDictResult}")
-    val length = new IntByReference()
-    val pbr = new PointerByReference()
-    core.voicevox_tts("こんにちは、世界", 2L /* めたん */, length, pbr)
-    println(s"length: ${length.getValue()}")
-    println(s"err: ${core.last_error_message()}")
-    val resultPtr = pbr.getValue()
-    val resultArray = resultPtr.getByteArray(0, length.getValue())
+    println(core.voicevox_get_metas_json())
+    // val loadDictResult =
+    //   core.voicevox_load_openjtalk_dict(dictionaryDirectory)
+    // println(s"loadResult: ${loadDictResult}")
+    val wl = new IntByReference()
+    val wav = new PointerByReference()
+    val ttsOpts = core.voicevox_make_default_tts_options()
+    val tts = core.voicevox_tts(
+      "こんにちは、世界",
+      2,
+      ttsOpts,
+      wl,
+      wav,
+    )
+    println(s"length: ${wl.getValue()}")
+    val resultPtr = wav.getValue()
+    val resultArray = resultPtr.getByteArray(0, wl.getValue())
     val fs = new FileOutputStream("./result.wav")
     fs.write(resultArray)
     fs.close()
-    core.voicevox_wav_free(resultPtr)
-    core.finalizeCore()
+    core.voicevox_wav_free(resultArray)
+    core.voicevox_finalize()
   }
 }
