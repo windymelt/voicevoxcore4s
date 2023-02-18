@@ -29,9 +29,9 @@ lazy val x8664linuxcpu = (project in file(".")).settings(
     scalaTest % Test,
   ),
   downloadCore := {
-    if(java.nio.file.Files.notExists(new File("voicevox_core-linux-x64-cpu-0.13.0").toPath())) {
+    if(java.nio.file.Files.notExists(new File("voicevox_core-linux-x64-cpu-0.14.1").toPath())) {
         println("[libcore] Path does not exist, downloading...")
-        IO.unzipURL(new URL("https://github.com/VOICEVOX/voicevox_core/releases/download/0.13.0/voicevox_core-linux-x64-cpu-0.13.0.zip"), new File("voicevox_core-linux-x64-cpu-0.13.0"))
+        IO.unzipURL(new URL("https://github.com/VOICEVOX/voicevox_core/releases/download/0.14.1/voicevox_core-linux-x64-cpu-0.14.1.zip"), new File("voicevox_core-linux-x64-cpu-0.14.1"))
     } else {
         println("[libcore] Path exists, no need to download.")
     }
@@ -50,7 +50,7 @@ lazy val x8664linuxcpu = (project in file(".")).settings(
   },
   Compile / unmanagedResourceDirectories += { baseDirectory.value / "open_jtalk_dic_utf_8-1.11" },
   Compile / unmanagedResources ++= { Seq(
-    file("voicevox_core-linux-x64-cpu-0.13.0/voicevox_core-linux-x64-cpu-0.13.0/libcore.so"),
+    file("voicevox_core-linux-x64-cpu-0.14.1/voicevox_core-linux-x64-cpu-0.14.1/libcore.so"),
     file("onnxruntime-linux-x64-1.10.0/lib/libonnxruntime.so.1.10.0"),
     file("onnxruntime-linux-x64-1.10.0/lib/libonnxruntime.so"),
   ) },
