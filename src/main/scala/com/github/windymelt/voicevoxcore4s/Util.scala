@@ -45,45 +45,22 @@ object Util {
     * @return
     *   Library directory path
     */
-  def extractLibraries(): String = {
+  def extractLibraries(): Unit = {
     import scala.sys.process._
 
-    println(s"copying library files into ${libDir.toString()}")
+    // TODO: attempt to use com.sun.jna.Native.extractFromResourcePath()
+    System.setProperty("jna.tmpdir", libDir.toString())
+    println(s"Extracting library into $libDir")
+    com.sun.jna.Native.extractFromResourcePath(s"/${BuildInfo.libcoreFile}")
+    com.sun.jna.Native.extractFromResourcePath(s"/${BuildInfo.libonnxFile}")
 
-    // libcore
-    val libcoreFile = libDir / BuildInfo.libcoreFile
-    if (
-      java.nio.file.Files.notExists(
-        java.nio.file.Path.of(libcoreFile.toString())
-      )
-    ) {
-      println(s"copying ${BuildInfo.libcoreFile}")
-      val stream = getClass.getResourceAsStream(s"/${BuildInfo.libcoreFile}")
-      os.write(libcoreFile, stream, createFolders = true)
-    }
-
-    // libonnx
-    val libonnxFile = libDir / BuildInfo.libonnxFile
-    if (
-      java.nio.file.Files.notExists(
-        java.nio.file.Path.of(libonnxFile.toString())
-      )
-    ) {
-      println(s"copying ${BuildInfo.libonnxFile}")
-      val stream = getClass.getResourceAsStream(s"/${BuildInfo.libonnxFile}")
-      os.write(libonnxFile, stream, createFolders = true)
-    }
-
-    println("finished extracting")
-    libDir.toString()
+    // TODO: なんとかしてmodelディレクトリをvoicevoxcore4s-libs以下にコピーする
   }
 
-  /** Load VOICEVOX and ONNXRuntime libraries.
-    *
-    * Because Double-loading causes runtime error, do call this method only once.
-    */
-  def unsafeLoadLibraries(): Unit = {
-    System.load((libDir / BuildInfo.libcoreFile).toString)
-    System.load((libDir / BuildInfo.libonnxFile).toString)
+  def loadCore(): Unit = {
+    println("loading onnx")
+    com.sun.jna.NativeLibrary.getInstance("libonnxruntime.so.1.13.1")
+    println("loading core")
+    com.sun.jna.NativeLibrary.getInstance("voicevox_core")
   }
 }
