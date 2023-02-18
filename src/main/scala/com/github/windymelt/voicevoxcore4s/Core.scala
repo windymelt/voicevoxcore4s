@@ -128,7 +128,7 @@ object Core {
   )
   def apply(): Core = INSTANCE
 
-  object VoicevoxResultCode extends Enumeration {
+  object VoicevoxResultCode {
     type Repr = Int
     val VOICEVOX_RESULT_OK = 0
     val VOICEVOX_RESULT_NOT_LOADED_OPENJTALK_DICT_ERROR = 1
