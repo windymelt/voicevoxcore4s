@@ -21,7 +21,7 @@ trait Core extends Library {
   type VoicevoxSynthesisOptions = Int
   type VoicevoxTtsOptions = Int
 
-  def voicvox_audio_query(
+  def voicevox_audio_query(
     text: String,
     speaker_id: Int,
     options: VoicevoxAudioQueryOptions, // TODO: struct
