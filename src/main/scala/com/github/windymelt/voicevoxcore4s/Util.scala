@@ -62,5 +62,6 @@ object Util {
     com.sun.jna.NativeLibrary.getInstance("libonnxruntime.so.1.13.1")
     println("loading core")
     com.sun.jna.NativeLibrary.getInstance("voicevox_core")
+    println("library loaded")
   }
 }
