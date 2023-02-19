@@ -1,38 +1,54 @@
 package com.github.windymelt.voicevoxcore4s
 
-import com.sun.jna.ptr.{PointerByReference, IntByReference}
+import com.sun.jna.ptr.{PointerByReference, IntByReference, LongByReference}
 import java.io.FileOutputStream
 
 object Hello extends App {
-  println("initializing")
-  println(System.getProperty("java.library.path"))
   /* Extract dictionary files from JAR into real file system */
   val dictionaryDirectory = Util.extractDictFiles()
-  val libs = Util.extractLibraries()
-  
-  // CAVEAT: Call only once
-  Util.unsafeLoadLibraries()
+  Util.extractModels()
+  Util.extractAndLoadLibraries()
 
   val core = Core()
-  val initialized = core.initialize(use_gpu = false)
-  println(s"Hello, voicevoxcore4s! initialized? -> ($initialized)")
-  if (initialized) {
-    println("reading meta info...")
-    println(core.metas())
-    val loadDictResult =
-      core.voicevox_load_openjtalk_dict(dictionaryDirectory)
-    println(s"loadResult: ${loadDictResult}")
-    val length = new IntByReference()
-    val pbr = new PointerByReference()
-    core.voicevox_tts("こんにちは、世界", 2L /* めたん */, length, pbr)
-    println(s"length: ${length.getValue()}")
-    println(s"err: ${core.last_error_message()}")
-    val resultPtr = pbr.getValue()
-    val resultArray = resultPtr.getByteArray(0, length.getValue())
-    val fs = new FileOutputStream("./result.wav")
-    fs.write(resultArray)
-    fs.close()
-    core.voicevox_wav_free(resultPtr)
-    core.finalizeCore()
+  println(core.voicevox_get_version())
+  val initializeOptions = core.voicevox_make_default_initialize_options()
+  initializeOptions.open_jtalk_dict_dir = dictionaryDirectory
+  initializeOptions.acceleration_mode =
+    Core.VoicevoxAccelerationMode.VOICEVOX_ACCELERATION_MODE_CPU.code
+  println(initializeOptions)
+  val initialized = core.voicevox_initialize(initializeOptions)
+  println(s"Hello, voicevoxcore4s! initialized? -> (${initialized})")
+  if (initialized == Core.VoicevoxResultCode.VOICEVOX_RESULT_OK.code) {
+    val loadResult = core.voicevox_load_model(2) // metan
+    println(s"model loaded: $loadResult")
+    val wl = new IntByReference()
+    val wav = new PointerByReference()
+    val ttsOpts = core.voicevox_make_default_tts_options()
+    ttsOpts.kana = false
+    val tts = core.voicevox_tts(
+      "こんにちは、世界",
+      2,
+      ttsOpts,
+      wl,
+      wav
+    )
+    if (tts == Core.VoicevoxResultCode.VOICEVOX_RESULT_OK.code) {
+      println(s"length: ${wl.getValue()}")
+      val resultPtr = wav.getValue()
+      println("got pointer")
+      val resultArray = resultPtr.getByteArray(0, wl.getValue())
+      println("got array")
+      val fs = new FileOutputStream("./result.wav")
+      fs.write(resultArray)
+      println("wrote array into file")
+      fs.close()
+      println("closed file")
+      core.voicevox_wav_free(resultPtr)
+      println("freed array")
+    } else {
+      println(s"tts failed: $tts")
+    }
+
+    core.voicevox_finalize()
   }
 }

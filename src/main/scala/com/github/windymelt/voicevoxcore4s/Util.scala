@@ -2,10 +2,9 @@ package com.github.windymelt.voicevoxcore4s
 
 import java.io.File
 import java.lang.invoke.MethodHandles
+import Logger.logger
 
 object Util {
-  // FIXME: jarPath will diverge when using sbt...
-  // val jarPath = new java.io.File(Util.getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile()
   val jarPath = os.pwd
   val libDir = jarPath / "voicevoxcore4s-libs"
 
@@ -18,7 +17,7 @@ object Util {
     */
   def extractDictFiles(): String = {
     val tmpdir = os.temp.dir(prefix = "voicevoxcore4s", deleteOnExit = true)
-    println(s"extracting dictionary files itnto $tmpdir...")
+    logger.debug(s"extracting dictionary files into $tmpdir...")
     val files = Seq(
       "char.bin",
       // "COPYING", // sbt-assemblyが自動的に名前を変更して不定になるので省略している。COPYING自体はJARに同梱される
@@ -30,13 +29,15 @@ object Util {
       "sys.dic",
       "unk.dic"
     )
-    for { p <- files } yield {
-      println(s"copying $p")
+    for { p <- files } {
       val stream = getClass.getResourceAsStream(s"/$p")
       val tmpPath = tmpdir / p
-      os.write(tmpPath, stream)
+      if (!os.exists(tmpPath)) {
+        logger.debug(s"copying $p")
+        os.write(tmpPath, stream, createFolders = true)
+      }
     }
-    println("finished extracting")
+    logger.debug("finished extracting")
     tmpdir.toString()
   }
 
@@ -45,45 +46,64 @@ object Util {
     * @return
     *   Library directory path
     */
-  def extractLibraries(): String = {
+  def extractAndLoadLibraries(): Unit = {
     import scala.sys.process._
+    import scala.collection.JavaConverters._
 
-    println(s"copying library files into ${libDir.toString()}")
+    System.setProperty("jna.tmpdir", libDir.toString())
+    logger.debug(s"extracting libraries into $libDir...")
 
-    // libcore
-    val libcoreFile = libDir / BuildInfo.libcoreFile
-    if (
-      java.nio.file.Files.notExists(
-        java.nio.file.Path.of(libcoreFile.toString())
-      )
-    ) {
-      println(s"copying ${BuildInfo.libcoreFile}")
-      val stream = getClass.getResourceAsStream(s"/${BuildInfo.libcoreFile}")
-      os.write(libcoreFile, stream, createFolders = true)
-    }
+    logger.debug("extracting libonnx...")
+    val libonnx =
+      com.sun.jna.Native.extractFromResourcePath(s"/${BuildInfo.libonnxFile}")
+    logger.debug(s"extracted onnx runtime: $libonnx")
 
-    // libonnx
-    val libonnxFile = libDir / BuildInfo.libonnxFile
-    if (
-      java.nio.file.Files.notExists(
-        java.nio.file.Path.of(libonnxFile.toString())
-      )
-    ) {
-      println(s"copying ${BuildInfo.libonnxFile}")
-      val stream = getClass.getResourceAsStream(s"/${BuildInfo.libonnxFile}")
-      os.write(libonnxFile, stream, createFolders = true)
-    }
+    val targetLibonnx = new File(libonnx.getParentFile(), BuildInfo.libonnxFile)
+    libonnx.renameTo(targetLibonnx)
+    logger.debug(s"renamed onnx runtime: -> $targetLibonnx")
 
-    println("finished extracting")
-    libDir.toString()
+    logger.debug("loading libonnx...")
+    System.load(targetLibonnx.getAbsolutePath())
+    logger.debug("loaded libonnx.")
+
+    logger.debug("extracting libcore...")
+    val libcore =
+      com.sun.jna.Native.extractFromResourcePath(s"/${BuildInfo.libcoreFile}")
+    logger.debug(s"extracted libcore: $libcore")
+
+    val targetLibcore = new File(libcore.getParentFile(), BuildInfo.libcoreFile)
+    libcore.renameTo(targetLibcore)
+    logger.debug(s"renamed libcore: -> $targetLibcore")
+
+    logger.debug("loading libcore...")
+    System.load(targetLibcore.getAbsolutePath())
+    logger.debug("loaded libcore.")
+
+    // val jarFile = new File(this.getClass.getProtectionDomain().getCodeSource().getLocation().getPath())
+    // val jar = new JarFile(jarFile)
+    // for {e <- jar.entries().asIterator().asScala} {
+    //   println(e.getName())
+    // }
+    // println(jarFile)
   }
 
-  /** Load VOICEVOX and ONNXRuntime libraries.
-    *
-    * Because Double-loading causes runtime error, do call this method only once.
+  /** Extract model files included in VOICEVOX Core into current working
+    * directory.
     */
-  def unsafeLoadLibraries(): Unit = {
-    System.load((libDir / BuildInfo.libcoreFile).toString)
-    System.load((libDir / BuildInfo.libonnxFile).toString)
+  def extractModels(): Unit = {
+    // TODO: 自動化したい。modelディレクトリごとresourcesに格納できないだろうか
+    logger.debug(s"extracting core models into $libDir...")
+    val binaries =
+      (0 to 11) flatMap (n => Seq(s"d${n}.bin", s"pd${n}.bin", s"pi${n}.bin"))
+    val files = binaries ++ Seq("metas.json")
+    for { p <- files } {
+      val stream = getClass.getResourceAsStream(s"/$p")
+      val tmpPath = libDir / "model" / p
+      if (!os.exists(tmpPath)) {
+        logger.debug(s"copying $p")
+        os.write(tmpPath, stream, createFolders = true)
+      }
+    }
+    logger.debug("finished extracting")
   }
 }

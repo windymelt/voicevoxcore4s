@@ -33,5 +33,6 @@ jobs:
       run: |
         sbt compile
         sbt run
+        sbt assembly
     - name: Run tests
       run: sbt test
