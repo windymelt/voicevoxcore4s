@@ -18,6 +18,7 @@ lazy val common = project
       "net.java.dev.jna" % "jna" % "5.12.1",
       "net.java.dev.jna" % "jna-platform" % "5.12.1",
       "com.lihaoyi" %% "os-lib" % "0.7.2", // for extracting resources
+      "com.typesafe.scala-logging" %% "scala-logging" % "3.9.4", // wrapper for SLF4J
     ),
   )
 

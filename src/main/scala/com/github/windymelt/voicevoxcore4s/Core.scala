@@ -17,6 +17,10 @@ import java.{util => ju}
 // cf. https://github.com/java-native-access/jna/blob/master/www/Mappings.md
 // cf. https://github.com/VOICEVOX/voicevox_core/blob/0.14.1/core/src/core.h
 // cf. https://voicevox.github.io/voicevox_core/apis/c_api/voicevox__core_8h.html
+
+/**
+  * VOICEVOX CoreライブラリのJNAによるラッパー。純粋にラッパーとして振る舞うため、元ライブラリに忠実に振る舞う。
+  */
 trait Core extends Library {
   def voicevox_audio_query(
       text: String,
@@ -119,6 +123,9 @@ trait Core extends Library {
 }
 
 object Core {
+  /**
+    * 関数/メソッド名を変換する層。かつてのバージョンのCoreでJavaの予約語に関数名が被っていた名残として用意している。
+    */
   private val functionMap = new com.sun.jna.FunctionMapper {
     def getFunctionName(library: NativeLibrary, method: Method): String =
       method.getName() match {
@@ -126,11 +133,16 @@ object Core {
       }
   }
 
-  private lazy val INSTANCE: Core = Native.load(
-    "voicevox_core",
-    classOf[Core],
-    Map(OPTION_FUNCTION_MAPPER -> functionMap).asJava
-  )
+  private lazy val INSTANCE: Core = {
+    Logger.logger.debug("Loading VOICEVOX Core via JNA...")
+    val core = Native.load(
+      "voicevox_core",
+      classOf[Core],
+      Map(OPTION_FUNCTION_MAPPER -> functionMap).asJava
+    )
+    Logger.logger.debug("VOICEVOX Core loaded.")
+    core
+  }
   def apply(): Core = INSTANCE
 
   sealed abstract class VoicevoxResultCode(val code: Int)
