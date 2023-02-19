@@ -70,6 +70,7 @@ sbt assembly
 ## TODO
 
 - 公式のダウンロードスクリプトを利用する
+- マルチアーキテクチャ(OS/GPU)対応
 - openjtalkを圧縮格納する
 
 ## Copyright / License(s)
