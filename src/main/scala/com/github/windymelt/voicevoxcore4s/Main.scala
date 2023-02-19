@@ -12,7 +12,7 @@ object Hello extends App {
   val core = Core()
   println(core.voicevox_get_version())
   val initializeOptions = core.voicevox_make_default_initialize_options()
-  initializeOptions.writeField("open_jtalk_dict_dir", dictionaryDirectory)
+  initializeOptions.open_jtalk_dict_dir = dictionaryDirectory
   initializeOptions.acceleration_mode =
     Core.VoicevoxAccelerationMode.VOICEVOX_ACCELERATION_MODE_CPU.code
   println(initializeOptions)
