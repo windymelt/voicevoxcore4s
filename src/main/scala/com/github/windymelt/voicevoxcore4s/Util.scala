@@ -78,7 +78,6 @@ object Util {
     logger.debug("loading libcore...")
     System.load(targetLibcore.getAbsolutePath())
     logger.debug("loaded libcore.")
-    // TODO: なんとかしてmodelディレクトリをvoicevoxcore4s-libs以下にコピーする
 
     // val jarFile = new File(this.getClass.getProtectionDomain().getCodeSource().getLocation().getPath())
     // val jar = new JarFile(jarFile)
