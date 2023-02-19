@@ -128,22 +128,23 @@ object Core {
   )
   def apply(): Core = INSTANCE
 
+  sealed abstract class VoicevoxResultCode(val code: Int)
   object VoicevoxResultCode {
     type Repr = Int
-    val VOICEVOX_RESULT_OK = 0
-    val VOICEVOX_RESULT_NOT_LOADED_OPENJTALK_DICT_ERROR = 1
-    val VOICEVOX_RESULT_LOAD_MODEL_ERROR  = 2
-    val VOICEVOX_RESULT_GET_SUPPORTED_DEVICES_ERROR  =3
-    val VOICEVOX_RESULT_GPU_SUPPORT_ERROR  = 4
-    val VOICEVOX_RESULT_LOAD_METAS_ERROR  = 5
-    val VOICEVOX_RESULT_UNINITIALIZED_STATUS_ERROR  = 6
-    val VOICEVOX_RESULT_INVALID_SPEAKER_ID_ERROR  = 7
-    val VOICEVOX_RESULT_INVALID_MODEL_INDEX_ERROR  = 8
-    val VOICEVOX_RESULT_INFERENCE_ERROR  = 9
-    val VOICEVOX_RESULT_EXTRACT_FULL_CONTEXT_LABEL_ERROR  = 10
-    val VOICEVOX_RESULT_INVALID_UTF8_INPUT_ERROR  = 11
-    val VOICEVOX_RESULT_PARSE_KANA_ERROR  = 12
-    val VOICEVOX_RESULT_INVALID_AUDIO_QUERY_ERROR = 13
+    case object VOICEVOX_RESULT_OK extends VoicevoxResultCode(0)
+    case object VOICEVOX_RESULT_NOT_LOADED_OPENJTALK_DICT_ERROR extends VoicevoxResultCode(1)
+    case object VOICEVOX_RESULT_LOAD_MODEL_ERROR extends VoicevoxResultCode(2)
+    case object VOICEVOX_RESULT_GET_SUPPORTED_DEVICES_ERROR extends VoicevoxResultCode(3)
+    case object VOICEVOX_RESULT_GPU_SUPPORT_ERROR extends VoicevoxResultCode(4)
+    case object VOICEVOX_RESULT_LOAD_METAS_ERROR extends VoicevoxResultCode(5)
+    case object VOICEVOX_RESULT_UNINITIALIZED_STATUS_ERROR extends VoicevoxResultCode(6)
+    case object VOICEVOX_RESULT_INVALID_SPEAKER_ID_ERROR extends VoicevoxResultCode(7)
+    case object VOICEVOX_RESULT_INVALID_MODEL_INDEX_ERROR extends VoicevoxResultCode(8)
+    case object VOICEVOX_RESULT_INFERENCE_ERROR extends VoicevoxResultCode(9)
+    case object VOICEVOX_RESULT_EXTRACT_FULL_CONTEXT_LABEL_ERROR extends VoicevoxResultCode(10)
+    case object VOICEVOX_RESULT_INVALID_UTF8_INPUT_ERROR extends VoicevoxResultCode(11)
+    case object VOICEVOX_RESULT_PARSE_KANA_ERROR extends VoicevoxResultCode(12)
+    case object VOICEVOX_RESULT_INVALID_AUDIO_QUERY_ERROR extends VoicevoxResultCode(13)
   }
 
   sealed abstract class VoicevoxAccelerationMode(val code: Short)

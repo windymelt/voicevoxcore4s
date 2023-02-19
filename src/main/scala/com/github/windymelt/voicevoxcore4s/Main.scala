@@ -17,7 +17,7 @@ object Hello extends App {
   println(initializeOptions)
   val initialized = core.voicevox_initialize(initializeOptions)
   println(s"Hello, voicevoxcore4s! initialized? -> (${initialized})")
-  if (initialized == Core.VoicevoxResultCode.VOICEVOX_RESULT_OK) {
+  if (initialized == Core.VoicevoxResultCode.VOICEVOX_RESULT_OK.code) {
     println("loading model")
     val loadResult = core.voicevox_load_model(2)
     println(s"model loaded: $loadResult")
@@ -32,7 +32,7 @@ object Hello extends App {
       wl,
       wav,
     )
-    if (tts == Core.VoicevoxResultCode.VOICEVOX_RESULT_OK) {
+    if (tts == Core.VoicevoxResultCode.VOICEVOX_RESULT_OK.code) {
       println(s"length: ${wl.getValue()}")
       val resultPtr = wav.getValue()
       println("got pointer")
