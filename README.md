@@ -69,6 +69,7 @@ sbt assembly
 ```
 ## TODO
 
+- 公式のダウンロードスクリプトを利用する
 - openjtalkを圧縮格納する
 
 ## Copyright / License(s)
