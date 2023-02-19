@@ -4,7 +4,6 @@ import com.sun.jna.ptr.{PointerByReference, IntByReference, LongByReference}
 import java.io.FileOutputStream
 
 object Hello extends App {
-  // TODO: Log4j
   /* Extract dictionary files from JAR into real file system */
   val dictionaryDirectory = Util.extractDictFiles()
   Util.extractModels()
