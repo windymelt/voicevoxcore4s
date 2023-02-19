@@ -146,5 +146,10 @@ object Core {
     val VOICEVOX_RESULT_INVALID_AUDIO_QUERY_ERROR = 13
   }
 
-  type VoicevoxAccelerationMode = Int // TODO: use Enumeration
+  sealed abstract class VoicevoxAccelerationMode(val code: Short)
+  object VoicevoxAccelerationMode {
+    case object VOICEVOX_ACCELERATION_MODE_AUTO extends VoicevoxAccelerationMode(0)
+    case object VOICEVOX_ACCELERATION_MODE_CPU extends VoicevoxAccelerationMode(1)
+    case object VOICEVOX_ACCELERATION_MODE_GPU extends VoicevoxAccelerationMode(2)
+  }
 }

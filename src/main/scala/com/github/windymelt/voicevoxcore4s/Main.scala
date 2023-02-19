@@ -13,7 +13,7 @@ object Hello extends App {
   println(core.voicevox_get_version())
   val initializeOptions = core.voicevox_make_default_initialize_options()
   initializeOptions.writeField("open_jtalk_dict_dir", dictionaryDirectory)
-  initializeOptions.acceleration_mode = 1 // TODO: Define Enum
+  initializeOptions.acceleration_mode = Core.VoicevoxAccelerationMode.VOICEVOX_ACCELERATION_MODE_CPU.code
   println(initializeOptions)
   val initialized = core.voicevox_initialize(initializeOptions)
   println(s"Hello, voicevoxcore4s! initialized? -> (${initialized})")
