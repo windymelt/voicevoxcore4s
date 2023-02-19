@@ -7,6 +7,7 @@ object Hello extends App {
   // TODO: Log4j
   /* Extract dictionary files from JAR into real file system */
   val dictionaryDirectory = Util.extractDictFiles()
+  Util.extractModels()
   Util.extractAndLoadLibraries()
 
   val core = Core()

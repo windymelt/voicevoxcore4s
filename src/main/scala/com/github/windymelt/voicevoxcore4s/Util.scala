@@ -4,8 +4,6 @@ import java.io.File
 import java.lang.invoke.MethodHandles
 
 object Util {
-  // FIXME: jarPath will diverge when using sbt...
-  // val jarPath = new java.io.File(Util.getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile()
   val jarPath = os.pwd
   val libDir = jarPath / "voicevoxcore4s-libs"
 
@@ -49,6 +47,7 @@ object Util {
     */
   def extractAndLoadLibraries(): Unit = {
     import scala.sys.process._
+    import scala.collection.JavaConverters._
 
     System.setProperty("jna.tmpdir", libDir.toString())
     val libonnx =
@@ -63,5 +62,29 @@ object Util {
     libcore.renameTo(targetLibcore)
     System.load(targetLibcore.getAbsolutePath())
     // TODO: なんとかしてmodelディレクトリをvoicevoxcore4s-libs以下にコピーする
+
+    // val jarFile = new File(this.getClass.getProtectionDomain().getCodeSource().getLocation().getPath())
+    // val jar = new JarFile(jarFile)
+    // for {e <- jar.entries().asIterator().asScala} {
+    //   println(e.getName())
+    // }
+    // println(jarFile)
+  }
+
+  /** Extract model files included in VOICEVOX Core into current working
+    * directory.
+    */
+  def extractModels(): Unit = {
+    // TODO: 自動化したい。modelディレクトリごとresourcesに格納できないだろうか
+    val binaries =
+      (0 to 11) flatMap (n => Seq(s"d${n}.bin", s"pd${n}.bin", s"pi${n}.bin"))
+    val files = binaries ++ Seq("metas.json")
+    for { p <- files } {
+      val stream = getClass.getResourceAsStream(s"/$p")
+      val tmpPath = libDir / "model" / p
+      if (!os.exists(tmpPath)) {
+        os.write(tmpPath, stream, createFolders = true)
+      }
+    }
   }
 }

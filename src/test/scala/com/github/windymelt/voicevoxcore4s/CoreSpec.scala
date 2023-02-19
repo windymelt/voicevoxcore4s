@@ -7,6 +7,7 @@ import com.sun.jna.ptr.{PointerByReference, IntByReference}
 
 class CoreSpec extends AnyFlatSpec with Matchers {
   val dictionaryDirectory = Util.extractDictFiles()
+  Util.extractModels()
   Util.extractAndLoadLibraries()
 
   "Core" should "work at voicevox_tts" in {
