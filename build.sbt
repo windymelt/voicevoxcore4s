@@ -1,7 +1,7 @@
 import Dependencies._
+import ReleaseTransformations._
 
 ThisBuild / scalaVersion := "2.13.8"
-ThisBuild / version := "0.14.1-SNAPSHOT"
 ThisBuild / organization := "com.github.windymelt"
 ThisBuild / organizationName := "windymelt"
 
@@ -45,4 +45,20 @@ lazy val x8664linuxcpu = (project in file(".")).settings(
     file("voicevox_core-linux-x64-cpu-0.14.1/voicevox_core-linux-x64-cpu-0.14.1/libonnxruntime.so.1.13.1"),
   ) },
 ).dependsOn(common).enablePlugins(BuildInfoPlugin)
+.settings(
+    releaseProcess := Seq[ReleaseStep](
+      checkSnapshotDependencies,              // : ReleaseStep
+      inquireVersions,                        // : ReleaseStep
+      runClean,                               // : ReleaseStep
+      runTest,                                // : ReleaseStep
+      setReleaseVersion,                      // : ReleaseStep
+      commitReleaseVersion,                   // : ReleaseStep, performs the initial git checks
+      tagRelease,                             // : ReleaseStep
+      // publishArtifacts, // : ReleaseStep, checks whether `publishTo` is properly set up
+      releaseStepTask(assembly),
+      setNextVersion,                         // : ReleaseStep
+      commitNextVersion,                      // : ReleaseStep
+      pushChanges                             // : ReleaseStep, also checks that an upstream branch is properly configured
+    )
+  )
 // See https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html for instructions on how to publish to Sonatype.
