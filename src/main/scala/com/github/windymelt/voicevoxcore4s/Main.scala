@@ -8,18 +8,18 @@ object Hello extends App {
   /* Extract dictionary files from JAR into real file system */
   val dictionaryDirectory = Util.extractDictFiles()
   Util.extractAndLoadLibraries()
-  
+
   val core = Core()
   println(core.voicevox_get_version())
   val initializeOptions = core.voicevox_make_default_initialize_options()
   initializeOptions.writeField("open_jtalk_dict_dir", dictionaryDirectory)
-  initializeOptions.acceleration_mode = Core.VoicevoxAccelerationMode.VOICEVOX_ACCELERATION_MODE_CPU.code
+  initializeOptions.acceleration_mode =
+    Core.VoicevoxAccelerationMode.VOICEVOX_ACCELERATION_MODE_CPU.code
   println(initializeOptions)
   val initialized = core.voicevox_initialize(initializeOptions)
   println(s"Hello, voicevoxcore4s! initialized? -> (${initialized})")
   if (initialized == Core.VoicevoxResultCode.VOICEVOX_RESULT_OK.code) {
-    println("loading model")
-    val loadResult = core.voicevox_load_model(2)
+    val loadResult = core.voicevox_load_model(2) // metan
     println(s"model loaded: $loadResult")
     val wl = new IntByReference()
     val wav = new PointerByReference()
@@ -30,7 +30,7 @@ object Hello extends App {
       2,
       ttsOpts,
       wl,
-      wav,
+      wav
     )
     if (tts == Core.VoicevoxResultCode.VOICEVOX_RESULT_OK.code) {
       println(s"length: ${wl.getValue()}")
@@ -48,7 +48,7 @@ object Hello extends App {
     } else {
       println(s"tts failed: $tts")
     }
-    
+
     core.voicevox_finalize()
   }
 }

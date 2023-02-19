@@ -34,7 +34,7 @@ object Util {
       println(s"copying $p")
       val stream = getClass.getResourceAsStream(s"/$p")
       val tmpPath = tmpdir / p
-      if (! os.exists(tmpPath)) {
+      if (!os.exists(tmpPath)) {
         os.write(tmpPath, stream, createFolders = true)
       }
     }
@@ -50,28 +50,18 @@ object Util {
   def extractAndLoadLibraries(): Unit = {
     import scala.sys.process._
 
-    // TODO: attempt to use com.sun.jna.Native.extractFromResourcePath()
-    println(s"Extracting library into $libDir")
     System.setProperty("jna.tmpdir", libDir.toString())
-    val libonnx = com.sun.jna.Native.extractFromResourcePath(s"/${BuildInfo.libonnxFile}")
+    val libonnx =
+      com.sun.jna.Native.extractFromResourcePath(s"/${BuildInfo.libonnxFile}")
     val targetLibonnx = new File(libonnx.getParentFile(), BuildInfo.libonnxFile)
     libonnx.renameTo(targetLibonnx)
     System.load(targetLibonnx.getAbsolutePath())
-    println(targetLibonnx)
 
-    val libcore = com.sun.jna.Native.extractFromResourcePath(s"/${BuildInfo.libcoreFile}")
+    val libcore =
+      com.sun.jna.Native.extractFromResourcePath(s"/${BuildInfo.libcoreFile}")
     val targetLibcore = new File(libcore.getParentFile(), BuildInfo.libcoreFile)
     libcore.renameTo(targetLibcore)
     System.load(targetLibcore.getAbsolutePath())
-    println(targetLibcore)
     // TODO: なんとかしてmodelディレクトリをvoicevoxcore4s-libs以下にコピーする
   }
-
-  // def loadCore(): Unit = {
-  //   println("loading onnx")
-  //   com.sun.jna.NativeLibrary.getInstance("libonnxruntime.so.1.13.1")
-  //   println("loading core")
-  //   com.sun.jna.NativeLibrary.getInstance("voicevox_core")
-  //   println("library loaded")
-  // }
 }
