@@ -126,7 +126,7 @@ object Core {
       }
   }
 
-  private val INSTANCE: Core = Native.load(
+  private lazy val INSTANCE: Core = Native.load(
     "voicevox_core",
     classOf[Core],
     Map(OPTION_FUNCTION_MAPPER -> functionMap).asJava
