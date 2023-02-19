@@ -1,18 +1,14 @@
 # voicevoxcore4s
 Scala wrapper for [VOICEVOX Core](https://github.com/VOICEVOX/voicevox_core)
 
-Currently this binding supports [VOICEVOX Core v0.13.0](https://github.com/VOICEVOX/voicevox_core/tree/0.13.0).
+Currently this binding supports [VOICEVOX Core v0.14.1](https://github.com/VOICEVOX/voicevox_core/tree/0.14.1).
 
 ## Prerequisite
 
-- VOICEVOX Core v0.13.0 (`libcore.so`)
-  - sbt will download and bundle fully automatically
-- ONNX runtime v1.10.0 (`libonnx*.so`)
+- VOICEVOX Core v0.14.1 (`libcore.so`)
   - sbt will download and bundle fully automatically
 - OpenJtalk dictionary v1.11 Binary package UTF-8
   - Use bundled dicectory (You have to do nothing)
-  - or Download here http://downloads.sourceforge.net/open-jtalk/open_jtalk_dic_utf_8-1.11.tar.gz
-    - Extract `open_jtalk_dic_utf_8-1.11.tar.gz` and place directory `open_jtalk_dic_utf_8-1.11` aside `build.sbt`
 
 ## Minimal example
 
@@ -21,28 +17,42 @@ import com.sun.jna.ptr.{PointerByReference, IntByReference}
 import java.io.FileOutputStream
 
 val dictionaryDirectory = Util.extractDictFiles()
-val libs = Util.extractLibraries()
-  
-// CAVEAT: Call only once
-Util.unsafeLoadLibraries()
+Util.extractModels()
+Util.extractAndLoadLibraries()
 
 val core = Core()
-val initialized = core.initialize(use_gpu = false)
-if (initialized) {
-  val loadDictResult = core.voicevox_load_openjtalk_dict(dictionaryDirectory)
-  if (loadDictResult == 0) {
-    val (length, pbr) = (new IntByReference(), new PointerByReference())
-    core.voicevox_tts("こんにちは、世界", 2L /* 四国めたん */, length, pbr)
-    println(s"length: ${length.getValue()}")
-    println(s"err: ${core.last_error_message()}")
-    val resultPtr = pbr.getValue()
-    val resultArray = resultPtr.getByteArray(0, length.getValue())
+
+val initializeOptions = core.voicevox_make_default_initialize_options()
+initializeOptions.open_jtalk_dict_dir = dictionaryDirectory
+initializeOptions.acceleration_mode =
+  Core.VoicevoxAccelerationMode.VOICEVOX_ACCELERATION_MODE_CPU.code
+
+val initialized = core.voicevox_initialize(initializeOptions)
+if (initialized == Core.VoicevoxResultCode.VOICEVOX_RESULT_OK.code) {
+  val loadResult = core.voicevox_load_model(2) // metan
+  val (wl, wav) = (new IntByReference(), new PointerByReference())
+  val ttsOpts = core.voicevox_make_default_tts_options()
+  ttsOpts.kana = false
+
+  val tts = core.voicevox_tts(
+    "こんにちは、世界",
+    2, // metan
+    ttsOpts,
+    wl,
+    wav
+  )
+  if (tts == Core.VoicevoxResultCode.VOICEVOX_RESULT_OK.code) {
+    val resultPtr = wav.getValue()
+    val resultArray = resultPtr.getByteArray(0, wl.getValue())
     val fs = new FileOutputStream("./result.wav")
     fs.write(resultArray)
     fs.close()
     core.voicevox_wav_free(resultPtr)
+  } else {
+    println(s"tts failed: $tts")
   }
-  core.finalizeCore()
+
+  core.voicevox_finalize()
 }
 ```
 
@@ -52,7 +62,7 @@ if (initialized) {
 
 Other platforms are not verified but may work correctly.
 
-## Copyright(s)
+## Copyright / License(s)
 
 ### libcore
 
@@ -61,7 +71,7 @@ This software packages and redistributes [VOICEVOX Core](https://github.com/VOIC
 Original license follows below:
 
 ```
-これは「四国めたん」「ずんだもん」「春日部つむぎ」「雨晴はう」「波音リツ」「玄野武宏」「白上虎太郎」「青山龍星」「冥鳴ひまり」「九州そら」「もち子さん」の VOICEVOX コアライブラリです。
+これは VOICEVOX コアライブラリです。
 https://github.com/Hiroshiba/voicevox_core
 
 ## 許諾内容
@@ -95,7 +105,7 @@ https://zunko.jp/con_ongen_kiyaku.html
 「VOICEVOX:春日部つむぎ」とクレジットを記載すれば、商用・非商用で利用可能です。
 
 利用規約の詳細は以下をご確認ください。
-https://tsukushinyoki10.wixsite.com/ktsumugiofficial/%E5%88%A9%E7%94%A8%E8%A6%8F%E7%B4%84
+https://tsumugi-official.studio.site/rule
 
 ### 波音リツ
 
@@ -136,7 +146,7 @@ https://virvoxproject.wixsite.com/official/voicevoxの利用規約
 「VOICEVOX:冥鳴ひまり」とクレジットを記載すれば、商用・非商用で利用可能です。
 
 利用規約の詳細は以下をご確認ください。
-https://kotoran8zunzun.wixsite.com/my-site/利用規約
+https://meimeihimari.wixsite.com/himari/terms-of-use
 
 ### 九州そら
 
@@ -160,8 +170,66 @@ https://vtubermochio.wixsite.com/mochizora/利用規約
 剣崎雌雄の音声ライブラリを用いて生成した音声は、
 「VOICEVOX:剣崎雌雄」とクレジットを記載すれば、商用・非商用で利用可能です。
 
-利用規約の詳細は以下をご確認ください。  
+利用規約の詳細は以下をご確認ください。
 https://frontier.creatia.cc/fanclubs/413/posts/4507
+
+### WhiteCUL
+
+WhiteCULの音声ライブラリを用いて生成した音声は、
+「VOICEVOX:WhiteCUL」とそれぞれクレジットを記載すれば、商用・非商用で利用可能です。
+
+利用規約の詳細は以下をご確認ください。
+https://www.whitecul.com/guideline
+
+### 後鬼
+
+個人が後鬼の音声ライブラリを用いて生成した音声は、
+「VOICEVOX:後鬼」とクレジットを記載すれば、商用・非商用で利用可能です。
+ただし企業が携わる形で利用する場合は、「【鬼っ子ハンターついなちゃん】プロジェクト(https://ついなちゃん.com/mail/)」に対し事前確認を取る必要があります。
+
+利用規約の詳細は以下をご確認ください。
+https://ついなちゃん.com/voicevox_terms/
+
+### No.7
+
+個人がNo.7の音声ライブラリを用いて生成した音声は、
+「VOICEVOX:No.7」とクレジットを記載すれば、非商用（同人利用や配信による収入はOK）で利用可能です。
+その他商用利用の場合は、「No.7製作委員会(https://voiceseven.com/)」に対し事前確認を取る必要があります。
+
+利用規約の詳細は以下をご確認ください。
+https://voiceseven.com/#j0200
+
+### ちび式じい
+
+ちび式じいの音声ライブラリを用いて生成した音声は、
+「VOICEVOX:ちび式じい」とクレジットを記載すれば、商用・非商用で利用可能です。
+
+利用規約の詳細は以下をご確認ください。
+https://docs.google.com/presentation/d/1AcD8zXkfzKFf2ertHwWRwJuQXjNnijMxhz7AJzEkaI4
+
+### 櫻歌ミコ
+
+櫻歌ミコの音声ライブラリを用いて生成した音声は、
+「VOICEVOX:櫻歌ミコ」とクレジットを記載すれば、商用・非商用で利用可能です。
+
+利用規約の詳細は以下をご確認ください。
+https://voicevox35miko.studio.site/rule
+
+### 小夜/SAYO
+
+小夜/SAYOの音声ライブラリを用いて生成した音声は、
+「VOICEVOX:小夜/SAYO」とクレジットを記載すれば、商用・非商用で利用可能です。
+
+利用規約の詳細は以下をご確認ください。
+https://316soramegu.wixsite.com/sayo-official/guideline
+
+### ナースロボ＿タイプＴ
+
+ナースロボ＿タイプＴの音声ライブラリを用いて生成した音声は、
+「VOICEVOX:ナースロボ＿タイプＴ」とクレジットを記載すれば、商用・非商用で利用可能です。
+
+利用規約の詳細は以下をご確認ください。
+https://www.krnr.top/rules
 
 ## 禁止事項
 
