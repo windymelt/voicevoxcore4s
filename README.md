@@ -62,6 +62,15 @@ if (initialized == Core.VoicevoxResultCode.VOICEVOX_RESULT_OK.code) {
 
 Other platforms are not verified but may work correctly.
 
+## Build
+
+```sh
+sbt assembly
+```
+## TODO
+
+- openjtalkを圧縮格納する
+
 ## Copyright / License(s)
 
 ### libcore
