@@ -79,7 +79,7 @@ trait Core extends Library {
     output_predict_duration_data: PointerByReference, // float**
   ): Core.VoicevoxResultCode.Repr
 
-  def voicevox_predict_duration_data_free(predict_duration_data: Array[Float]): Unit
+  def voicevox_predict_duration_data_free(predict_duration_data: Pointer): Unit
 
   def voicevox_predict_intonation(
     length: Long,
@@ -110,7 +110,7 @@ trait Core extends Library {
     output_wav: PointerByReference,
   ): Core.VoicevoxResultCode.Repr
 
-  def voicevox_wav_free(wav: Array[Byte]): Unit
+  def voicevox_wav_free(wav: Pointer): Unit
 }
 
 object Core {

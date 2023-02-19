@@ -4,33 +4,27 @@ import com.sun.jna.ptr.{PointerByReference, IntByReference, LongByReference}
 import java.io.FileOutputStream
 
 object Hello extends App {
-  println("initializing")
-  println(System.getProperty("java.library.path"))
+  // TODO: Log4j
   /* Extract dictionary files from JAR into real file system */
   val dictionaryDirectory = Util.extractDictFiles()
-  val libs = Util.extractLibraries()
+  Util.extractAndLoadLibraries()
   
-  // CAVEAT: Call only once
-  //Util.unsafeLoadLibraries()
-
-  Util.loadCore()
   val core = Core()
   println(core.voicevox_get_version())
   val initializeOptions = core.voicevox_make_default_initialize_options()
-  initializeOptions.open_jtalk_dict_dir = dictionaryDirectory
-  initializeOptions.acceleration_mode = 1
+  initializeOptions.writeField("open_jtalk_dict_dir", dictionaryDirectory)
+  initializeOptions.acceleration_mode = 1 // TODO: Define Enum
   println(initializeOptions)
   val initialized = core.voicevox_initialize(initializeOptions)
   println(s"Hello, voicevoxcore4s! initialized? -> (${initialized})")
   if (initialized == Core.VoicevoxResultCode.VOICEVOX_RESULT_OK) {
-    println("reading meta info...")
-    println(core.voicevox_get_metas_json())
-    // val loadDictResult =
-    //   core.voicevox_load_openjtalk_dict(dictionaryDirectory)
-    // println(s"loadResult: ${loadDictResult}")
+    println("loading model")
+    val loadResult = core.voicevox_load_model(2)
+    println(s"model loaded: $loadResult")
     val wl = new IntByReference()
     val wav = new PointerByReference()
     val ttsOpts = core.voicevox_make_default_tts_options()
+    ttsOpts.kana = false
     val tts = core.voicevox_tts(
       "こんにちは、世界",
       2,
@@ -38,13 +32,23 @@ object Hello extends App {
       wl,
       wav,
     )
-    println(s"length: ${wl.getValue()}")
-    val resultPtr = wav.getValue()
-    val resultArray = resultPtr.getByteArray(0, wl.getValue())
-    val fs = new FileOutputStream("./result.wav")
-    fs.write(resultArray)
-    fs.close()
-    core.voicevox_wav_free(resultArray)
+    if (tts == Core.VoicevoxResultCode.VOICEVOX_RESULT_OK) {
+      println(s"length: ${wl.getValue()}")
+      val resultPtr = wav.getValue()
+      println("got pointer")
+      val resultArray = resultPtr.getByteArray(0, wl.getValue())
+      println("got array")
+      val fs = new FileOutputStream("./result.wav")
+      fs.write(resultArray)
+      println("wrote array into file")
+      fs.close()
+      println("closed file")
+      core.voicevox_wav_free(resultPtr)
+      println("freed array")
+    } else {
+      println(s"tts failed: $tts")
+    }
+    
     core.voicevox_finalize()
   }
 }

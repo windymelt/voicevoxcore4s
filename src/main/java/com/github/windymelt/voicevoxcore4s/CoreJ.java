@@ -6,11 +6,12 @@ import java.util.List;
 import com.sun.jna.Library;
 
 public interface CoreJ extends Library {
+	// TODO: Implement constructor
 	public static class VoicevoxInitializeOptions extends Structure {
 		public static class ByValue extends VoicevoxInitializeOptions implements Structure.ByValue { }
 		public static class ByReference extends VoicevoxInitializeOptions implements Structure.ByReference { }
 
-		public int acceleration_mode;
+		public short acceleration_mode; // enum
 		public short cpu_num_threads; // uint16
 		public boolean load_all_models;
 		public String open_jtalk_dict_dir;
