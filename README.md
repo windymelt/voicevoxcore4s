@@ -1,4 +1,5 @@
-# voicevoxcore4s
+# voicevoxcore4s [![Latest version](https://index.scala-lang.org/windymelt/voicevoxcore4s/voicevoxcore4s/latest.svg)](https://index.scala-lang.org/windymelt/voicevoxcore4s/voicevoxcore4s)
+
 Scala wrapper for [VOICEVOX Core](https://github.com/VOICEVOX/voicevox_core)
 
 Currently this binding supports [VOICEVOX Core v0.14.1](https://github.com/VOICEVOX/voicevox_core/tree/0.14.1).
