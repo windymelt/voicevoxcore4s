@@ -1,4 +1,4 @@
-package com.github.windymelt.voicevoxcore4s
+package dev.capslock.voicevoxcore4s
 
 import com.sun.jna.ptr.{PointerByReference, IntByReference, LongByReference}
 import java.io.FileOutputStream

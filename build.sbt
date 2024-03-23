@@ -35,7 +35,7 @@ lazy val downloadCore =
 
 Compile / compile := (Compile / compile).dependsOn(downloadCore).value
 
-buildInfoPackage := "com.github.windymelt.voicevoxcore4s"
+buildInfoPackage := "dev.capslock.voicevoxcore4s"
 
 lazy val common = project
   .settings(
