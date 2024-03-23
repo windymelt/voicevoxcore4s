@@ -63,7 +63,9 @@ lazy val dehydrated = (project in file("."))
       Seq(
         baseDirectory.value / "open_jtalk_dic_utf_8-1.11" // 辞書はリソースに含める
       )
-    }
+    },
+    publishTo := sonatypePublishToBundle.value,
+    sonatypeCredentialHost := sonatypeCentralHost
   )
   .dependsOn(common)
   .enablePlugins(BuildInfoPlugin)
