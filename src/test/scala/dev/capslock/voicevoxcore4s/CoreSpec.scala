@@ -1,12 +1,11 @@
-package com.github.windymelt.voicevoxcore4s
+package dev.capslock.voicevoxcore4s
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 import com.sun.jna.ptr.{PointerByReference, IntByReference}
 
-/**
-  * 確実に一度だけライブラリをロードするためにObjectを使っている
+/** 確実に一度だけライブラリをロードするためにObjectを使っている
   */
 object TestRunner {
   val dictionaryDirectory = Util.extractDictFiles()

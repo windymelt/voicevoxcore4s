@@ -1,4 +1,4 @@
-package com.github.windymelt.voicevoxcore4s
+package dev.capslock.voicevoxcore4s
 
 import com.sun.jna.Library
 import com.sun.jna.Library.OPTION_FUNCTION_MAPPER
@@ -18,8 +18,7 @@ import java.{util => ju}
 // cf. https://github.com/VOICEVOX/voicevox_core/blob/0.14.1/core/src/core.h
 // cf. https://voicevox.github.io/voicevox_core/apis/c_api/voicevox__core_8h.html
 
-/**
-  * VOICEVOX CoreライブラリのJNAによるラッパー。純粋にラッパーとして振る舞うため、元ライブラリに忠実に振る舞う。
+/** VOICEVOX CoreライブラリのJNAによるラッパー。純粋にラッパーとして振る舞うため、元ライブラリに忠実に振る舞う。
   */
 trait Core extends Library {
   def voicevox_audio_query(
@@ -123,8 +122,8 @@ trait Core extends Library {
 }
 
 object Core {
-  /**
-    * 関数/メソッド名を変換する層。かつてのバージョンのCoreでJavaの予約語に関数名が被っていた名残として用意している。
+
+  /** 関数/メソッド名を変換する層。かつてのバージョンのCoreでJavaの予約語に関数名が被っていた名残として用意している。
     */
   private val functionMap = new com.sun.jna.FunctionMapper {
     def getFunctionName(library: NativeLibrary, method: Method): String =

@@ -1,4 +1,4 @@
-package com.github.windymelt.voicevoxcore4s
+package dev.capslock.voicevoxcore4s
 
 import java.io.File
 import java.lang.invoke.MethodHandles
