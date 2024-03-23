@@ -65,7 +65,7 @@ lazy val dehydrated = (project in file("."))
       )
     }
   )
-  .dependsOn(common)
+  .aggregate(common)
   .enablePlugins(BuildInfoPlugin)
   .settings(
     releaseProcess := Seq[ReleaseStep](
