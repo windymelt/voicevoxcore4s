@@ -1,9 +1,34 @@
 import Dependencies._
 import ReleaseTransformations._
 
+import xerial.sbt.Sonatype.sonatypeCentralHost
+
+ThisBuild / publishTo := sonatypePublishToBundle.value
+ThisBuild / sonatypeCredentialHost := sonatypeCentralHost
+
 ThisBuild / scalaVersion := "2.13.13"
-ThisBuild / organization := "com.github.windymelt"
+ThisBuild / organization := "dev.capslock"
 ThisBuild / organizationName := "windymelt"
+ThisBuild / startYear := Some(2024)
+ThisBuild / licenses += License.MIT
+ThisBuild / homepage := Some(
+  url(
+    "https://github.com/windymelt/scala-new-maven-central-exercise"
+  )
+)
+ThisBuild / scmInfo := Some(
+  ScmInfo(
+    url("https://github.com/windymelt/scala-new-maven-central-exercise"),
+    "https://github.com/windymelt/scala-new-maven-central-exercise.git"
+  )
+)
+ThisBuild / developers += Developer(
+  "windymelt",
+  "windymelt",
+  "windymelt@3qe.us",
+  url("https://www.3qe.us/")
+)
+releasePublishArtifactsAction := PgpKeys.publishSigned.value
 
 lazy val downloadCore =
   taskKey[Unit]("Download libcore zip and extract it ./voicevox_core-*")
@@ -23,6 +48,43 @@ lazy val common = project
     )
   )
 
+lazy val dehydrated = (project in file("."))
+  .settings(
+    name := "voicevoxcore4s",
+    buildInfoKeys := Seq[BuildInfoKey](
+      "libcoreFile" -> "you don't need to extract library",
+      "libonnxFile" -> "you don't need to extract library"
+    ),
+    libraryDependencies ++= Seq(
+      scalaTest % Test
+    ),
+    downloadCore := {},
+    Compile / unmanagedResourceDirectories ++= {
+      Seq(
+        baseDirectory.value / "open_jtalk_dic_utf_8-1.11" // 辞書はリソースに含める
+      )
+    }
+  )
+  .dependsOn(common)
+  .enablePlugins(BuildInfoPlugin)
+  .settings(
+    releaseProcess := Seq[ReleaseStep](
+      checkSnapshotDependencies, // : ReleaseStep
+      inquireVersions, // : ReleaseStep
+      runClean, // : ReleaseStep
+      runTest, // : ReleaseStep
+      setReleaseVersion, // : ReleaseStep
+      commitReleaseVersion, // : ReleaseStep, performs the initial git checks
+      tagRelease, // : ReleaseStep
+      publishArtifacts,
+      releaseStepTask(assembly),
+      setNextVersion, // : ReleaseStep
+      commitNextVersion, // : ReleaseStep
+      pushChanges // : ReleaseStep, also checks that an upstream branch is properly configured
+    )
+  )
+
+// We don't provide Maven Central artifact for this build config due to huge size of library.
 lazy val x8664linuxcpu = (project in file("."))
   .settings(
     name := "voicevoxcore4s-linux-x64-cpu",
