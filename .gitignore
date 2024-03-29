@@ -12,3 +12,6 @@ voicevoxcore4s-libs
 *.tar.gz
 *.zip
 *.log
+
+.idea/
+lib/
