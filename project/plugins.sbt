@@ -5,7 +5,7 @@ addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "2.1.0")
 addSbtPlugin("com.github.sbt" % "sbt-release" % "1.1.0")
 
 addSbtPlugin(
-  "org.xerial.sbt" % "sbt-sonatype" % "0.0.0-734-5b5db727"
+  "org.xerial.sbt" % "sbt-sonatype" % "0.0.0-736-9c0bbe91"
 ) // CAVEAT: Due to incapability with latest sbt-sonatype, use local built one
 // cf. https://github.com/xerial/sbt-sonatype/issues/465
 
