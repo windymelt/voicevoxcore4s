@@ -2,7 +2,7 @@
 
 Scala wrapper for [VOICEVOX Core](https://github.com/VOICEVOX/voicevox_core)
 
-Currently this binding supports [VOICEVOX Core v0.14.1](https://github.com/VOICEVOX/voicevox_core/tree/0.14.1).
+Currently, this binding supports [VOICEVOX Core v0.14.1](https://github.com/VOICEVOX/voicevox_core/tree/0.14.1).
 
 ## Prerequisite
 
@@ -13,49 +13,7 @@ Currently this binding supports [VOICEVOX Core v0.14.1](https://github.com/VOICE
 
 ## Minimal example
 
-```scala
-import com.sun.jna.ptr.{PointerByReference, IntByReference}
-import java.io.FileOutputStream
-
-val dictionaryDirectory = Util.extractDictFiles()
-Util.extractModels()
-Util.extractAndLoadLibraries()
-
-val core = Core()
-
-val initializeOptions = core.voicevox_make_default_initialize_options()
-initializeOptions.open_jtalk_dict_dir = dictionaryDirectory
-initializeOptions.acceleration_mode =
-  Core.VoicevoxAccelerationMode.VOICEVOX_ACCELERATION_MODE_CPU.code
-
-val initialized = core.voicevox_initialize(initializeOptions)
-if (initialized == Core.VoicevoxResultCode.VOICEVOX_RESULT_OK.code) {
-  val loadResult = core.voicevox_load_model(2) // metan
-  val (wl, wav) = (new IntByReference(), new PointerByReference())
-  val ttsOpts = core.voicevox_make_default_tts_options()
-  ttsOpts.kana = false
-
-  val tts = core.voicevox_tts(
-    "こんにちは、世界",
-    2, // metan
-    ttsOpts,
-    wl,
-    wav
-  )
-  if (tts == Core.VoicevoxResultCode.VOICEVOX_RESULT_OK.code) {
-    val resultPtr = wav.getValue()
-    val resultArray = resultPtr.getByteArray(0, wl.getValue())
-    val fs = new FileOutputStream("./result.wav")
-    fs.write(resultArray)
-    fs.close()
-    core.voicevox_wav_free(resultPtr)
-  } else {
-    println(s"tts failed: $tts")
-  }
-
-  core.voicevox_finalize()
-}
-```
+Please see `Main.scala`
 
 ## Supported platforms
 
