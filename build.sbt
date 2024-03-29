@@ -29,6 +29,7 @@ ThisBuild / developers += Developer(
   url("https://www.3qe.us/")
 )
 Global / useGpgPinentry := true
+usePgpKeyHex("067CA1B7F7EF25BDB29E7EC285008CAC8263E794")
 releasePublishArtifactsAction := PgpKeys.publishSigned.value
 
 lazy val downloadCore =
