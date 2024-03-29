@@ -3,7 +3,7 @@ package dev.capslock.voicevoxcore4s
 import com.sun.jna.ptr.{PointerByReference, IntByReference, LongByReference}
 import java.io.FileOutputStream
 
-object Hello extends App {
+object Main extends App {
   // Extract dictionary files from JAR into real file system.
   // Files will go to temporary directory in OS.
   val dictionaryDirectory = Util.extractDictFiles()
@@ -25,7 +25,7 @@ object Hello extends App {
   println(initializeOptions)
 
   val initialized = core.voicevox_initialize(initializeOptions)
-  println(s"Hello, voicevoxcore4s! initialized? -> (${initialized})")
+  println(s"Main, voicevoxcore4s! initialized? -> (${initialized})")
 
   if (initialized == Core.VoicevoxResultCode.VOICEVOX_RESULT_OK.code) {
     val model_shikoku_metan = 2
