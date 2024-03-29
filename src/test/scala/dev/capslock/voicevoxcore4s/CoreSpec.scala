@@ -5,14 +5,6 @@ import org.scalatest.matchers.should.Matchers
 
 import com.sun.jna.ptr.{PointerByReference, IntByReference}
 
-/** 確実に一度だけライブラリをロードするためにObjectを使っている
-  */
-object TestRunner {
-  val dictionaryDirectory = Util.extractDictFiles()
-  Util.extractModels()
-  Util.extractAndLoadLibraries()
-}
-
 class CoreSpec extends AnyFlatSpec with Matchers {
   // "Core" should "work at voicevox_tts" in {
   //   val core = Core()
