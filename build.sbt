@@ -28,6 +28,7 @@ ThisBuild / developers += Developer(
   "windymelt@3qe.us",
   url("https://www.3qe.us/")
 )
+Global / useGpgPinentry := true
 releasePublishArtifactsAction := PgpKeys.publishSigned.value
 
 lazy val downloadCore =
